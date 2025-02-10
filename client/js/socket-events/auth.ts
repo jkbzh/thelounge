@@ -12,14 +12,12 @@ declare global {
 }
 
 socket.on("auth:success", function () {
-	store.commit("isAuthFailure", false);
 	store.commit("currentUserVisibleError", "Loading messages…");
 	updateLoadingMessage();
 });
 
 socket.on("auth:failed", async function () {
 	storage.remove("token");
-	store.commit("isAuthFailure", true);
 
 	if (store.state.appLoaded) {
 		return reloadPage("Authentication failed, reloading…");
@@ -29,8 +27,6 @@ socket.on("auth:failed", async function () {
 });
 
 socket.on("auth:start", async function (serverHash) {
-	store.commit("isAuthFailure", false);
-
 	// If we reconnected and serverHash differs, that means the server restarted
 	// And we will reload the page to grab the latest version
 	if (lastServerHash && serverHash !== lastServerHash) {

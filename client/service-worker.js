@@ -7,7 +7,6 @@ const cacheName = "__HASH__";
 const excludedPathsFromCache = /^(?:socket\.io|storage|uploads|cdn-cgi)\//;
 
 self.addEventListener("install", function () {
-	self.shutdown = false;
 	self.skipWaiting();
 });
 
@@ -26,10 +25,6 @@ self.addEventListener("activate", function (event) {
 });
 
 self.addEventListener("fetch", function (event) {
-	if (self.shutdown) {
-		return;
-	}
-
 	if (event.request.method !== "GET") {
 		return;
 	}
@@ -115,10 +110,6 @@ async function networkOrCache(event) {
 }
 
 self.addEventListener("message", function (event) {
-	if (event.data.type === "shutdown") {
-		self.shutdown = true;
-	}
-
 	showNotification(event, event.data);
 });
 
